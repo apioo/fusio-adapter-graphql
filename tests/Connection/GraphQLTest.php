@@ -23,6 +23,9 @@ namespace Fusio\Adapter\GraphQL\Tests\Connection;
 
 use Fusio\Adapter\GraphQL\ClientInterface;
 use Fusio\Adapter\GraphQL\Connection\GraphQL;
+use Fusio\Adapter\GraphQL\Error;
+use Fusio\Adapter\GraphQL\ErrorCollection;
+use Fusio\Adapter\GraphQL\ErrorException;
 use Fusio\Engine\Form\Builder;
 use Fusio\Engine\Form\Container;
 use Fusio\Engine\Form\Element\Input;
@@ -47,12 +50,65 @@ class GraphQLTest extends TestCase
         $connection = $this->getConnectionFactory()->factory(GraphQL::class);
 
         $config = new Parameters([
-            'url' => 'http://foo.com',
+            'url' => 'https://fakerql.com/graphql',
         ]);
 
         $client = $connection->getConnection($config);
 
         $this->assertInstanceOf(ClientInterface::class, $client);
+
+        // test send query against fake endpoint
+        $query = <<<GRAPHQL
+{
+  products: allProducts(count: 8) {
+    id
+    name
+    price
+  }
+}
+GRAPHQL;
+
+        $data = $client->request($query);
+
+        $this->assertInstanceOf(\stdClass::class, $data);
+        $this->assertTrue(isset($data->products));
+    }
+
+    public function testGetConnectionError()
+    {
+        /** @var GraphQL $connection */
+        $connection = $this->getConnectionFactory()->factory(GraphQL::class);
+
+        $config = new Parameters([
+            'url' => 'https://fakerql.com/graphql',
+        ]);
+
+        $client = $connection->getConnection($config);
+
+        $this->assertInstanceOf(ClientInterface::class, $client);
+
+        // test send query against fake endpoint
+        $query = <<<'GRAPHQL'
+{
+  products: allProducts(count: $foo) {
+    id
+    name
+    price
+  }
+}
+GRAPHQL;
+
+        try {
+            $client->request($query);
+
+            $this->fail('Should throw an exception');
+        } catch (ErrorException $e) {
+            $collection = $e->getErrors();
+            $this->assertEquals('Variable "$foo" is not defined.', $e->getMessage());
+            $this->assertInstanceOf(ErrorCollection::class, $collection);
+            $this->assertInstanceOf(Error::class, $collection[0]);
+            $this->assertEquals('Variable "$foo" is not defined.', $collection[0]->getMessage());
+        }
     }
 
     public function testConfigure()
