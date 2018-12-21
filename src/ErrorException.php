@@ -39,7 +39,7 @@ class ErrorException extends \Exception
 
     public function __construct(array $errors, int $code = 0, Throwable $previous = null)
     {
-        parent::__construct($errors[0] ?? '', $code, $previous);
+        parent::__construct($errors[0]['message'] ?? '', $code, $previous);
 
         $this->errros = $errors;
     }
