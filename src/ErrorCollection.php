@@ -37,7 +37,7 @@ class ErrorCollection extends \ArrayObject
 
     public function getFirstMessage()
     {
-        if ($this->count() > 0) {
+        if ($this->offsetExists(0)) {
             return $this->offsetGet(0)->getMessage(); 
         } else {
             return 'An unknown error occurred';
