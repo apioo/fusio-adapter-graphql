@@ -48,16 +48,19 @@ class GraphQL implements ConnectionInterface
      */
     public function getConnection(ParametersInterface $config)
     {
-        $options = [];
-        $options['http_errors'] = false;
-
-        $client = new GuzzleHttp\Client($options);
-
-        return new Client($client, $config->get('url'));
+        return new Client($this->newHttpClient(), $config->get('url'));
     }
 
     public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory)
     {
         $builder->add($elementFactory->newInput('url', 'Url', 'text', 'HTTP base url'));
+    }
+
+    protected function newHttpClient()
+    {
+        $options = [];
+        $options['http_errors'] = false;
+
+        return new GuzzleHttp\Client($options);
     }
 }
