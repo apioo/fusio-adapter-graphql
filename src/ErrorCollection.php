@@ -21,39 +21,38 @@
 
 namespace Fusio\Adapter\GraphQL;
 
-use Throwable;
-
 /**
- * Client
+ * ErrorCollection
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    http://fusio-project.org
  */
-class ErrorException extends \Exception
+class ErrorCollection extends \ArrayObject
 {
-    /**
-     * @var \Fusio\Adapter\GraphQL\ErrorCollection
-     */
-    protected $errors;
-
-    /**
-     * @param \Fusio\Adapter\GraphQL\ErrorCollection $errors
-     * @param int $code
-     * @param \Throwable|null $previous
-     */
-    public function __construct(ErrorCollection $errors, int $code = 0, Throwable $previous = null)
+    public function __construct(array $errors)
     {
-        parent::__construct($errors->getFirstMessage(), $code, $previous);
-
-        $this->errors = $errors;
+        parent::__construct($this->build($errors));
     }
 
-    /**
-     * @return \Fusio\Adapter\GraphQL\ErrorCollection
-     */
-    public function getErrors()
+    public function getFirstMessage()
     {
-        return $this->errors;
+        if ($this->count() > 0) {
+            return $this->offsetGet(0)->getMessage(); 
+        } else {
+            return 'An unknown error occurred';
+        }
+    }
+
+    private function build(array $errors)
+    {
+        $result = [];
+        foreach ($errors as $error) {
+            if ($error instanceof \stdClass) {
+                $result[] = Error::fromObject($error);
+            }
+        }
+
+        return $result;
     }
 }
