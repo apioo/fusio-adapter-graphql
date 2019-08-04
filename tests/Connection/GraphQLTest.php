@@ -50,7 +50,7 @@ class GraphQLTest extends TestCase
         $connection = $this->getConnectionFactory()->factory(GraphQL::class);
 
         $config = new Parameters([
-            'url' => 'https://fakerql.com/graphql',
+            'url' => 'https://graphql-demo-v2.now.sh/',
         ]);
 
         $client = $connection->getConnection($config);
@@ -60,10 +60,9 @@ class GraphQLTest extends TestCase
         // test send query against fake endpoint
         $query = <<<GRAPHQL
 {
-  products: allProducts(count: 8) {
-    id
-    name
-    price
+  allBooks {
+    author,
+    title
   }
 }
 GRAPHQL;
@@ -71,7 +70,7 @@ GRAPHQL;
         $data = $client->request($query);
 
         $this->assertInstanceOf(\stdClass::class, $data);
-        $this->assertTrue(isset($data->products));
+        $this->assertTrue(isset($data->allBooks));
     }
 
     public function testGetConnectionError()
@@ -80,7 +79,7 @@ GRAPHQL;
         $connection = $this->getConnectionFactory()->factory(GraphQL::class);
 
         $config = new Parameters([
-            'url' => 'https://fakerql.com/graphql',
+            'url' => 'https://graphql-demo-v2.now.sh/',
         ]);
 
         $client = $connection->getConnection($config);
@@ -90,10 +89,9 @@ GRAPHQL;
         // test send query against fake endpoint
         $query = <<<'GRAPHQL'
 {
-  products: allProducts(count: $foo) {
-    id
-    name
-    price
+  allBooks(count: $foo) {
+    author,
+    title
   }
 }
 GRAPHQL;
