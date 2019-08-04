@@ -102,10 +102,10 @@ GRAPHQL;
             $this->fail('Should throw an exception');
         } catch (ErrorException $e) {
             $collection = $e->getErrors();
-            $this->assertEquals('Variable "$foo" is not defined.', $e->getMessage());
+            $this->assertEquals('Unknown argument "count" on field "allBooks" of type "Query".', $e->getMessage());
             $this->assertInstanceOf(ErrorCollection::class, $collection);
             $this->assertInstanceOf(Error::class, $collection[0]);
-            $this->assertEquals('Variable "$foo" is not defined.', $collection[0]->getMessage());
+            $this->assertEquals('Unknown argument "count" on field "allBooks" of type "Query".', $collection[0]->getMessage());
         }
     }
 
