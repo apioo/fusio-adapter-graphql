@@ -34,8 +34,7 @@ interface ClientInterface
      * @param string $query
      * @param array|null $variables
      * @param string|null $operationName
-     * @return mixed|\Fusio\Adapter\GraphQL\ErrorCollection
-     * @throws \Fusio\Adapter\GraphQL\ErrorException
+     * @return mixed
      */
     public function request(string $query, array $variables = null, string $operationName = null);
 }
