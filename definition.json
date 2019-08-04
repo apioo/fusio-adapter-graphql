@@ -1,4 +1,7 @@
 {
+  "actionClass": [
+    "Fusio\\Adapter\\GraphQL\\Action\\GraphQLProcessor"
+  ],
   "connectionClass": [
     "Fusio\\Adapter\\GraphQL\\Connection\\GraphQL"
   ]
