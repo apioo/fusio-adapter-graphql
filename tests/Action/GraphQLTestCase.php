@@ -46,7 +46,7 @@ abstract class GraphQLTestCase extends TestCase
 {
     use EngineTestCaseTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
     }
