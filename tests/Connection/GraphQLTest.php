@@ -56,57 +56,6 @@ class GraphQLTest extends TestCase
         $client = $connection->getConnection($config);
 
         $this->assertInstanceOf(ClientInterface::class, $client);
-
-        // test send query against fake endpoint
-        $query = <<<GRAPHQL
-{
-  allBooks {
-    author,
-    title
-  }
-}
-GRAPHQL;
-
-        $data = $client->request($query);
-
-        $this->assertInstanceOf(\stdClass::class, $data);
-        $this->assertTrue(isset($data->allBooks));
-    }
-
-    public function testGetConnectionError()
-    {
-        /** @var GraphQL $connection */
-        $connection = $this->getConnectionFactory()->factory(GraphQL::class);
-
-        $config = new Parameters([
-            'url' => 'https://graphql-demo-v2.now.sh/',
-        ]);
-
-        $client = $connection->getConnection($config);
-
-        $this->assertInstanceOf(ClientInterface::class, $client);
-
-        // test send query against fake endpoint
-        $query = <<<'GRAPHQL'
-{
-  allBooks(count: $foo) {
-    author,
-    title
-  }
-}
-GRAPHQL;
-
-        try {
-            $client->request($query);
-
-            $this->fail('Should throw an exception');
-        } catch (ErrorException $e) {
-            $collection = $e->getErrors();
-            $this->assertEquals('Unknown argument "count" on field "allBooks" of type "Query".', $e->getMessage());
-            $this->assertInstanceOf(ErrorCollection::class, $collection);
-            $this->assertInstanceOf(Error::class, $collection[0]);
-            $this->assertEquals('Unknown argument "count" on field "allBooks" of type "Query".', $collection[0]->getMessage());
-        }
     }
 
     public function testConfigure()
