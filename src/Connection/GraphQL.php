@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +22,7 @@
 namespace Fusio\Adapter\GraphQL\Connection;
 
 use Fusio\Adapter\GraphQL\Client;
+use Fusio\Adapter\GraphQL\ClientInterface;
 use Fusio\Engine\ConnectionInterface;
 use Fusio\Engine\Form\BuilderInterface;
 use Fusio\Engine\Form\ElementFactoryInterface;
@@ -33,30 +34,26 @@ use GuzzleHttp;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class GraphQL implements ConnectionInterface
 {
-    public function getName()
+    public function getName(): string
     {
         return 'GraphQL';
     }
 
-    /**
-     * @param \Fusio\Engine\ParametersInterface $config
-     * @return \Fusio\Adapter\GraphQL\ClientInterface
-     */
-    public function getConnection(ParametersInterface $config)
+    public function getConnection(ParametersInterface $config): ClientInterface
     {
         return new Client($this->newHttpClient(), $config->get('url'));
     }
 
-    public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory)
+    public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory): void
     {
         $builder->add($elementFactory->newInput('url', 'Url', 'text', 'HTTP base url'));
     }
 
-    protected function newHttpClient()
+    protected function newHttpClient(): GuzzleHttp\Client
     {
         $options = [];
         $options['http_errors'] = false;

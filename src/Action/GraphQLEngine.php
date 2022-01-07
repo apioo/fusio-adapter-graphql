@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +26,7 @@ use Fusio\Engine\ContextInterface;
 use Fusio\Engine\ParametersInterface;
 use Fusio\Engine\RequestInterface;
 use GuzzleHttp\Client;
+use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Http\Exception as StatusCode;
 
 /**
@@ -33,37 +34,30 @@ use PSX\Http\Exception as StatusCode;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class GraphQLEngine extends ActionAbstract
 {
-    /**
-     * @var string
-     */
-    protected $url;
+    protected ?string $url;
+    protected ?\GuzzleHttp\Client $client;
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $client;
-
-    public function __construct($url = null, Client $client = null)
+    public function __construct(?string $url = null, ?Client $client = null)
     {
         $this->url    = $url;
         $this->client = $client ?: new Client();
     }
 
-    public function setUrl($url)
+    public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
 
-    public function setClient(Client $client)
+    public function setClient(?Client $client): void
     {
         $this->client = $client;
     }
 
-    public function handle(RequestInterface $request, ParametersInterface $configuration, ContextInterface $context)
+    public function handle(RequestInterface $request, ParametersInterface $configuration, ContextInterface $context): HttpResponseInterface
     {
         if ($request->getMethod() === 'GET') {
             $query = $request->getParameter('query');
@@ -97,13 +91,7 @@ class GraphQLEngine extends ActionAbstract
         );
     }
 
-    /**
-     * @param string $query
-     * @param array|null $variables
-     * @param string|null $operationName
-     * @return array
-     */
-    private function getJson(string $query, array $variables = null, string $operationName = null)
+    private function getJson(string $query, ?array $variables = null, ?string $operationName = null): array
     {
         $json = ['query' => $query];
 

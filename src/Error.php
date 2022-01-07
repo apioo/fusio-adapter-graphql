@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,98 +26,58 @@ namespace Fusio\Adapter\GraphQL;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class Error
 {
-    /**
-     * @var string 
-     */
-    protected $message;
-
-    /**
-     * @var array
-     */
-    protected $locations;
-
-    /**
-     * @var array
-     */
-    protected $path;
-
-    /**
-     * @var \stdClass
-     */
-    protected $extensions;
+    protected string $message;
+    protected ?array $locations = null;
+    protected ?array $path = null;
+    protected ?\stdClass $extensions = null;
 
     public function __construct(string $message)
     {
         $this->message = $message;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
-    /**
-     * @return array
-     */
-    public function getLocations(): array
+    public function getLocations(): ?array
     {
         return $this->locations;
     }
 
-    /**
-     * @param array $locations
-     */
     public function setLocations(array $locations)
     {
         $this->locations = $locations;
     }
 
-    /**
-     * @return array
-     */
-    public function getPath(): array
+    public function getPath(): ?array
     {
         return $this->path;
     }
 
-    /**
-     * @param array $path
-     */
     public function setPath(array $path)
     {
         $this->path = $path;
     }
 
-    /**
-     * @return \stdClass
-     */
-    public function getExtensions(): \stdClass
+    public function getExtensions(): ?\stdClass
     {
         return $this->extensions;
     }
 
-    /**
-     * @param \stdClass $extensions
-     */
     public function setExtensions(\stdClass $extensions)
     {
         $this->extensions = $extensions;
     }
 
-    /**
-     * @param \stdClass $error
-     * @return Error
-     */
-    public static function fromObject(\stdClass $error)
+    public static function fromObject(\stdClass $error): self
     {
-        $error = new static($error->message ?? 'Unknown error');
+        $error = new self($error->message ?? 'Unknown error');
 
         if (isset($error->locations) && is_array($error->locations)) {
             $error->setLocations($error->locations);

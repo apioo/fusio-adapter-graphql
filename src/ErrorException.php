@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,31 +28,20 @@ use Throwable;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class ErrorException extends \Exception
 {
-    /**
-     * @var \Fusio\Adapter\GraphQL\ErrorCollection
-     */
-    protected $errors;
+    private ErrorCollection $errors;
 
-    /**
-     * @param \Fusio\Adapter\GraphQL\ErrorCollection $errors
-     * @param int $code
-     * @param \Throwable|null $previous
-     */
-    public function __construct(ErrorCollection $errors, int $code = 0, Throwable $previous = null)
+    public function __construct(ErrorCollection $errors, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($errors->getFirstMessage(), $code, $previous);
 
         $this->errors = $errors;
     }
 
-    /**
-     * @return \Fusio\Adapter\GraphQL\ErrorCollection
-     */
-    public function getErrors()
+    public function getErrors(): ErrorCollection
     {
         return $this->errors;
     }

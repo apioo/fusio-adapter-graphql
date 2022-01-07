@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,34 +28,20 @@ use GuzzleHttp;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class Client implements ClientInterface
 {
-    /**
-     * @var \GuzzleHttp\Client 
-     */
-    protected $httpClient;
+    protected \GuzzleHttp\Client $httpClient;
+    protected string $baseUrl;
 
-    /**
-     * @var string
-     */
-    protected $baseUrl;
-
-    /**
-     * @param \GuzzleHttp\Client $httpClient
-     * @param string $baseUrl
-     */
     public function __construct(GuzzleHttp\Client $httpClient, string $baseUrl)
     {
         $this->httpClient = $httpClient;
         $this->baseUrl    = $baseUrl;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function request(string $query, array $variables = null, string $operationName = null)
+    public function request(string $query, ?array $variables = null, ?string $operationName = null): mixed
     {
         $response = $this->httpClient->post($this->baseUrl, [
             'json' => $this->getJson($query, $variables, $operationName)
@@ -73,13 +59,7 @@ class Client implements ClientInterface
         }
     }
 
-    /**
-     * @param string $query
-     * @param array|null $variables
-     * @param string|null $operationName
-     * @return array
-     */
-    private function getJson(string $query, array $variables = null, string $operationName = null)
+    private function getJson(string $query, ?array $variables = null, ?string $operationName = null): array
     {
         $json = ['query' => $query];
 

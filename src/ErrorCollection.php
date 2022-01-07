@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +26,7 @@ namespace Fusio\Adapter\GraphQL;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 class ErrorCollection extends \ArrayObject
 {
@@ -35,7 +35,7 @@ class ErrorCollection extends \ArrayObject
         parent::__construct($this->build($errors));
     }
 
-    public function getFirstMessage()
+    public function getFirstMessage(): string
     {
         if ($this->offsetExists(0)) {
             return $this->offsetGet(0)->getMessage(); 
@@ -44,7 +44,7 @@ class ErrorCollection extends \ArrayObject
         }
     }
 
-    private function build(array $errors)
+    private function build(array $errors): array
     {
         $result = [];
         foreach ($errors as $error) {

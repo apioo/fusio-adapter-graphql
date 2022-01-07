@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2019 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,15 +26,9 @@ namespace Fusio\Adapter\GraphQL;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
- * @link    http://fusio-project.org
+ * @link    https://www.fusio-project.org/
  */
 interface ClientInterface
 {
-    /**
-     * @param string $query
-     * @param array|null $variables
-     * @param string|null $operationName
-     * @return mixed
-     */
-    public function request(string $query, array $variables = null, string $operationName = null);
+    public function request(string $query, ?array $variables = null, ?string $operationName = null): mixed;
 }
