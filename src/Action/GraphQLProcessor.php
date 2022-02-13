@@ -51,6 +51,6 @@ class GraphQLProcessor extends GraphQLEngine
 
     public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory): void
     {
-        $builder->add($elementFactory->newInput('url', 'URL', 'text', 'Click <a ng-click="help.showDialog(\'help/action/graphql.md\')">here</a> for more information.'));
+        $builder->add($elementFactory->newInput('url', 'URL', 'text', 'An url to the GraphQL endpoint'));
     }
 }
