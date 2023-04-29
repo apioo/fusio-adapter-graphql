@@ -21,13 +21,15 @@
 
 namespace Fusio\Adapter\GraphQL\Action;
 
+use Fusio\Adapter\GraphQL\Client;
+use Fusio\Engine\Action\RuntimeInterface;
 use Fusio\Engine\ActionAbstract;
 use Fusio\Engine\ContextInterface;
 use Fusio\Engine\ParametersInterface;
 use Fusio\Engine\RequestInterface;
-use GuzzleHttp\Client;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Http\Exception as StatusCode;
+use PSX\Record\RecordInterface;
 
 /**
  * GraphQLEngine
@@ -38,51 +40,41 @@ use PSX\Http\Exception as StatusCode;
  */
 class GraphQLEngine extends ActionAbstract
 {
-    protected ?string $url;
-    protected ?\GuzzleHttp\Client $client;
-
-    public function __construct(?string $url = null, ?Client $client = null)
-    {
-        $this->url    = $url;
-        $this->client = $client ?: new Client();
-    }
+    protected ?string $url = null;
 
     public function setUrl(?string $url): void
     {
         $this->url = $url;
     }
 
-    public function setClient(?Client $client): void
-    {
-        $this->client = $client;
-    }
-
     public function handle(RequestInterface $request, ParametersInterface $configuration, ContextInterface $context): HttpResponseInterface
     {
+        $operationName = null;
+        $variables = null;
         if ($request->getMethod() === 'GET') {
-            $query = $request->getParameter('query');
-            $operationName = null;
-            $variables = null;
+            $query = $request->get('query');
         } elseif ($request->getMethod() === 'POST') {
-            $body = $request->getBody();
+            $body = $request->getPayload();
 
-            $query = $body->getProperty('query');
-            $operationName = $body->getProperty('operationName');
-            $variables = $body->getProperty('variables');
+            if ($body instanceof RecordInterface) {
+                $query = $body->get('query');
+                $operationName = $body->get('operationName');
+                $variables = $body->get('variables');
+            }
         } else {
             throw new StatusCode\MethodNotAllowedException('Method not allowed', ['GET', 'POST']);
         }
 
-        if (empty($query)) {
+        if (empty($query) || !is_string($query)) {
             throw new StatusCode\BadRequestException('No query provided');
         }
 
-        $response = $this->client->post($this->url, [
-            'json' => $this->getJson($query, $variables, $operationName)
-        ]);
+        if ($variables !== null && !is_array($variables)) {
+            throw new StatusCode\BadRequestException('Variables must be an object');
+        }
 
-        $body = (string) $response->getBody();
-        $data = \GuzzleHttp\json_decode($body);
+        $client = new Client($this->url);
+        $data = $client->request($query, $variables, $operationName);
 
         return $this->response->build(
             200,

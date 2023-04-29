@@ -32,13 +32,13 @@ use GuzzleHttp;
  */
 class Client implements ClientInterface
 {
-    protected \GuzzleHttp\Client $httpClient;
-    protected string $baseUrl;
+    private string $baseUrl;
+    private \GuzzleHttp\Client $httpClient;
 
-    public function __construct(GuzzleHttp\Client $httpClient, string $baseUrl)
+    public function __construct(string $baseUrl)
     {
-        $this->httpClient = $httpClient;
         $this->baseUrl    = $baseUrl;
+        $this->httpClient = $this->newHttpClient();
     }
 
     public function request(string $query, ?array $variables = null, ?string $operationName = null): mixed
@@ -72,5 +72,13 @@ class Client implements ClientInterface
         }
 
         return $json;
+    }
+
+    private function newHttpClient(): GuzzleHttp\Client
+    {
+        $options = [];
+        $options['http_errors'] = false;
+
+        return new GuzzleHttp\Client($options);
     }
 }

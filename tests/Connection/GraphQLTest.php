@@ -23,15 +23,11 @@ namespace Fusio\Adapter\GraphQL\Tests\Connection;
 
 use Fusio\Adapter\GraphQL\ClientInterface;
 use Fusio\Adapter\GraphQL\Connection\GraphQL;
-use Fusio\Adapter\GraphQL\Error;
-use Fusio\Adapter\GraphQL\ErrorCollection;
-use Fusio\Adapter\GraphQL\ErrorException;
+use Fusio\Adapter\GraphQL\Tests\GraphQLTestCase;
 use Fusio\Engine\Form\Builder;
 use Fusio\Engine\Form\Container;
 use Fusio\Engine\Form\Element\Input;
 use Fusio\Engine\Parameters;
-use Fusio\Engine\Test\EngineTestCaseTrait;
-use PHPUnit\Framework\TestCase;
 
 /**
  * GraphQLTest
@@ -40,10 +36,8 @@ use PHPUnit\Framework\TestCase;
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  */
-class GraphQLTest extends TestCase
+class GraphQLTest extends GraphQLTestCase
 {
-    use EngineTestCaseTrait;
-
     public function testGetConnection()
     {
         /** @var GraphQL $connection */

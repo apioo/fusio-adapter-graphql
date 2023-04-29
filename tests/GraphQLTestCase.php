@@ -3,7 +3,7 @@
  * Fusio
  * A web-application to create dynamically RESTful APIs
  *
- * Copyright (C) 2015-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright (C) 2015-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,37 +19,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Fusio\Adapter\GraphQL\Connection;
+namespace Fusio\Adapter\GraphQL\Tests;
 
-use Fusio\Adapter\GraphQL\Client;
-use Fusio\Adapter\GraphQL\ClientInterface;
-use Fusio\Engine\ConnectionInterface;
-use Fusio\Engine\Form\BuilderInterface;
-use Fusio\Engine\Form\ElementFactoryInterface;
-use Fusio\Engine\ParametersInterface;
-use GuzzleHttp;
+use Fusio\Adapter\GraphQL\Action\GraphQLProcessor;
+use Fusio\Adapter\GraphQL\Connection\GraphQL;
+use Fusio\Engine\Action\Runtime;
+use Fusio\Engine\Test\EngineTestCaseTrait;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
- * GraphQL
+ * GraphQLTestCase
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  */
-class GraphQL implements ConnectionInterface
+abstract class GraphQLTestCase extends TestCase
 {
-    public function getName(): string
-    {
-        return 'GraphQL';
-    }
+    use EngineTestCaseTrait;
 
-    public function getConnection(ParametersInterface $config): ClientInterface
+    protected function configure(Runtime $runtime, Container $container): void
     {
-        return new Client($config->get('url'));
-    }
-
-    public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory): void
-    {
-        $builder->add($elementFactory->newInput('url', 'Url', 'text', 'HTTP base url'));
+        $container->set(GraphQL::class, new GraphQL());
+        $container->set(GraphQLProcessor::class, new GraphQLProcessor($runtime));
     }
 }
