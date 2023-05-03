@@ -48,7 +48,11 @@ class Client implements ClientInterface
         ]);
 
         $body = (string) $response->getBody();
-        $data = GuzzleHttp\json_decode($body);
+        $data = \json_decode($body);
+
+        if (!$data instanceof \stdClass) {
+            return null;
+        }
 
         if (isset($data->errors) && is_array($data->errors)) {
             throw new ErrorException(new ErrorCollection($data->errors));

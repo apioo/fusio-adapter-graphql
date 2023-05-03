@@ -27,6 +27,8 @@ namespace Fusio\Adapter\GraphQL;
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
+ *
+ * @template-extends \ArrayObject<\stdClass>
  */
 class ErrorCollection extends \ArrayObject
 {

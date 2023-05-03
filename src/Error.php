@@ -50,7 +50,7 @@ class Error
         return $this->locations;
     }
 
-    public function setLocations(array $locations)
+    public function setLocations(array $locations): void
     {
         $this->locations = $locations;
     }
@@ -60,7 +60,7 @@ class Error
         return $this->path;
     }
 
-    public function setPath(array $path)
+    public function setPath(array $path): void
     {
         $this->path = $path;
     }
@@ -70,7 +70,7 @@ class Error
         return $this->extensions;
     }
 
-    public function setExtensions(\stdClass $extensions)
+    public function setExtensions(\stdClass $extensions): void
     {
         $this->extensions = $extensions;
     }

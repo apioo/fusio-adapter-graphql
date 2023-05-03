@@ -22,10 +22,10 @@
 namespace Fusio\Adapter\GraphQL\Action;
 
 use Fusio\Adapter\GraphQL\Client;
-use Fusio\Engine\Action\RuntimeInterface;
 use Fusio\Engine\ActionAbstract;
 use Fusio\Engine\ContextInterface;
 use Fusio\Engine\ParametersInterface;
+use Fusio\Engine\Request\HttpRequest;
 use Fusio\Engine\RequestInterface;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Http\Exception as StatusCode;
@@ -51,18 +51,16 @@ class GraphQLEngine extends ActionAbstract
     {
         $operationName = null;
         $variables = null;
-        if ($request->getMethod() === 'GET') {
-            $query = $request->get('query');
-        } elseif ($request->getMethod() === 'POST') {
-            $body = $request->getPayload();
 
+        if ($request->getContext() instanceof HttpRequest && $request->getContext()->getMethod() === 'GET') {
+            $query = $request->get('query');
+        } else {
+            $body = $request->getPayload();
             if ($body instanceof RecordInterface) {
                 $query = $body->get('query');
                 $operationName = $body->get('operationName');
                 $variables = $body->get('variables');
             }
-        } else {
-            throw new StatusCode\MethodNotAllowedException('Method not allowed', ['GET', 'POST']);
         }
 
         if (empty($query) || !is_string($query)) {
@@ -81,20 +79,5 @@ class GraphQLEngine extends ActionAbstract
             [],
             $data
         );
-    }
-
-    private function getJson(string $query, ?array $variables = null, ?string $operationName = null): array
-    {
-        $json = ['query' => $query];
-
-        if ($operationName !== null) {
-            $json['operationName'] = $operationName;
-        }
-
-        if ($variables !== null) {
-            $json['variables'] = $variables;
-        }
-
-        return $json;
     }
 }
