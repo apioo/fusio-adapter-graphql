@@ -77,20 +77,20 @@ class Error
 
     public static function fromObject(\stdClass $error): self
     {
-        $error = new self($error->message ?? 'Unknown error');
+        $result = new self($error->message ?? 'Unknown error');
 
         if (isset($error->locations) && is_array($error->locations)) {
-            $error->setLocations($error->locations);
+            $result->setLocations($error->locations);
         }
 
         if (isset($error->path) && is_array($error->path)) {
-            $error->setPath($error->path);
+            $result->setPath($error->path);
         }
 
         if (isset($error->extensions) && $error->extensions instanceof \stdClass) {
-            $error->setExtensions($error->extensions);
+            $result->setExtensions($error->extensions);
         }
 
-        return $error;
+        return $result;
     }
 }
