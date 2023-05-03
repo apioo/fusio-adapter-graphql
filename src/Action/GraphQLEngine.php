@@ -52,7 +52,8 @@ class GraphQLEngine extends ActionAbstract
         $operationName = null;
         $variables = null;
 
-        if ($request->getContext() instanceof HttpRequest && $request->getContext()->getMethod() === 'GET') {
+        $context = $request->getContext();
+        if ($context instanceof HttpRequest && $context->getMethod() === 'GET') {
             $query = $request->get('query');
         } else {
             $body = $request->getPayload();
@@ -71,7 +72,9 @@ class GraphQLEngine extends ActionAbstract
             throw new StatusCode\BadRequestException('Variables must be an object');
         }
 
-        $client = new Client($this->url);
+        $url = $this->url ?? throw new StatusCode\InternalServerErrorException('No url configured');
+
+        $client = new Client($url);
         $data = $client->request($query, $variables, $operationName);
 
         return $this->response->build(
