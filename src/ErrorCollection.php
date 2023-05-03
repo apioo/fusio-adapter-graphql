@@ -28,7 +28,7 @@ namespace Fusio\Adapter\GraphQL;
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  *
- * @template-extends \ArrayObject<Error>
+ * @template-extends \ArrayObject<int, Error>
  */
 class ErrorCollection extends \ArrayObject
 {
