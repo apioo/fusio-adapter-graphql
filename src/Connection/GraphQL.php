@@ -23,11 +23,10 @@ namespace Fusio\Adapter\GraphQL\Connection;
 
 use Fusio\Adapter\GraphQL\Client;
 use Fusio\Adapter\GraphQL\ClientInterface;
-use Fusio\Engine\ConnectionInterface;
+use Fusio\Engine\ConnectionAbstract;
 use Fusio\Engine\Form\BuilderInterface;
 use Fusio\Engine\Form\ElementFactoryInterface;
 use Fusio\Engine\ParametersInterface;
-use GuzzleHttp;
 
 /**
  * GraphQL
@@ -36,7 +35,7 @@ use GuzzleHttp;
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  */
-class GraphQL implements ConnectionInterface
+class GraphQL extends ConnectionAbstract
 {
     public function getName(): string
     {
