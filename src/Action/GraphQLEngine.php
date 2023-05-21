@@ -25,7 +25,7 @@ use Fusio\Adapter\GraphQL\Client;
 use Fusio\Engine\ActionAbstract;
 use Fusio\Engine\ContextInterface;
 use Fusio\Engine\ParametersInterface;
-use Fusio\Engine\Request\HttpRequest;
+use Fusio\Engine\Request\HttpRequestContext;
 use Fusio\Engine\RequestInterface;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Http\Exception as StatusCode;
@@ -52,8 +52,8 @@ class GraphQLEngine extends ActionAbstract
         $operationName = null;
         $variables = null;
 
-        $context = $request->getContext();
-        if ($context instanceof HttpRequest && $context->getMethod() === 'GET') {
+        $requestContext = $request->getContext();
+        if ($requestContext instanceof HttpRequestContext && $requestContext->getRequest()->getMethod() === 'GET') {
             $query = $request->get('query');
         } else {
             $body = $request->getPayload();
