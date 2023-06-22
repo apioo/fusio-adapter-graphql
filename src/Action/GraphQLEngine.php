@@ -42,7 +42,7 @@ use PSX\Record\RecordInterface;
  */
 class GraphQLEngine implements ActionInterface
 {
-    protected ?string $url = null;
+    private ?string $url = null;
 
     private FactoryInterface $response;
 
