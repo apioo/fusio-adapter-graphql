@@ -22,11 +22,13 @@
 namespace Fusio\Adapter\GraphQL\Action;
 
 use Fusio\Adapter\GraphQL\Client;
-use Fusio\Engine\ActionAbstract;
+use Fusio\Engine\Action\RuntimeInterface;
+use Fusio\Engine\ActionInterface;
 use Fusio\Engine\ContextInterface;
 use Fusio\Engine\ParametersInterface;
 use Fusio\Engine\Request\HttpRequestContext;
 use Fusio\Engine\RequestInterface;
+use Fusio\Engine\Response\FactoryInterface;
 use PSX\Http\Environment\HttpResponseInterface;
 use PSX\Http\Exception as StatusCode;
 use PSX\Record\RecordInterface;
@@ -38,9 +40,16 @@ use PSX\Record\RecordInterface;
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  */
-class GraphQLEngine extends ActionAbstract
+class GraphQLEngine implements ActionInterface
 {
     protected ?string $url = null;
+
+    private FactoryInterface $response;
+
+    public function __construct(RuntimeInterface $runtime)
+    {
+        $this->response = $runtime->getResponse();
+    }
 
     public function setUrl(?string $url): void
     {
