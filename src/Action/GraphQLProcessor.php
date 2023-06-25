@@ -21,13 +21,18 @@
 
 namespace Fusio\Adapter\GraphQL\Action;
 
-use Fusio\Engine\ConfigurableInterface;
+use Fusio\Adapter\GraphQL\Client;
+use Fusio\Engine\ActionAbstract;
 use Fusio\Engine\ContextInterface;
+use Fusio\Engine\Exception\ConfigurationException;
 use Fusio\Engine\Form\BuilderInterface;
 use Fusio\Engine\Form\ElementFactoryInterface;
 use Fusio\Engine\ParametersInterface;
+use Fusio\Engine\Request\HttpRequestContext;
 use Fusio\Engine\RequestInterface;
 use PSX\Http\Environment\HttpResponseInterface;
+use PSX\Http\Exception as StatusCode;
+use PSX\Record\RecordInterface;
 
 /**
  * GraphQLProcessor
@@ -36,7 +41,7 @@ use PSX\Http\Environment\HttpResponseInterface;
  * @license http://www.gnu.org/licenses/agpl-3.0
  * @link    https://www.fusio-project.org/
  */
-class GraphQLProcessor extends GraphQLEngine implements ConfigurableInterface
+class GraphQLProcessor extends ActionAbstract
 {
     public function getName(): string
     {
@@ -45,9 +50,42 @@ class GraphQLProcessor extends GraphQLEngine implements ConfigurableInterface
 
     public function handle(RequestInterface $request, ParametersInterface $configuration, ContextInterface $context): HttpResponseInterface
     {
-        $this->setUrl($configuration->get('url'));
+        $url = $configuration->get('url');
+        if (empty($url)) {
+            throw new ConfigurationException('No url configured');
+        }
 
-        return parent::handle($request, $configuration, $context);
+        $operationName = null;
+        $variables = null;
+
+        $requestContext = $request->getContext();
+        if ($requestContext instanceof HttpRequestContext && $requestContext->getRequest()->getMethod() === 'GET') {
+            $query = $request->get('query');
+        } else {
+            $body = $request->getPayload();
+            if ($body instanceof RecordInterface) {
+                $query = $body->get('query');
+                $operationName = $body->get('operationName');
+                $variables = $body->get('variables');
+            }
+        }
+
+        if (empty($query) || !is_string($query)) {
+            throw new StatusCode\BadRequestException('No query provided');
+        }
+
+        if ($variables !== null && !is_array($variables)) {
+            throw new StatusCode\BadRequestException('Variables must be an object');
+        }
+
+        $client = new Client($url);
+        $data = $client->request($query, $variables, $operationName);
+
+        return $this->response->build(
+            200,
+            [],
+            $data
+        );
     }
 
     public function configure(BuilderInterface $builder, ElementFactoryInterface $elementFactory): void
