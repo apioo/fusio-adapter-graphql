@@ -21,12 +21,9 @@
 
 namespace Fusio\Adapter\GraphQL\Tests;
 
-use Fusio\Adapter\GraphQL\Action\GraphQLProcessor;
-use Fusio\Adapter\GraphQL\Connection\GraphQL;
-use Fusio\Engine\Action\Runtime;
+use Fusio\Adapter\GraphQL\Adapter;
 use Fusio\Engine\Test\EngineTestCaseTrait;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * GraphQLTestCase
@@ -39,9 +36,8 @@ abstract class GraphQLTestCase extends TestCase
 {
     use EngineTestCaseTrait;
 
-    protected function configure(Runtime $runtime, Container $container): void
+    protected function getAdapterClass(): string
     {
-        $container->set(GraphQL::class, new GraphQL());
-        $container->set(GraphQLProcessor::class, new GraphQLProcessor($runtime));
+        return Adapter::class;
     }
 }
